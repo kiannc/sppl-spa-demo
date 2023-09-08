@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+// require('dotenv').config()
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css'
+import NavBar from './components/NavBar'
+import Footer from './components/Footer';
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from '../src/pages/Home'
+import Login from '../src/pages/Login'
+import Sports from './pages/Sports';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {}
+    }
+  }
+
+  render () {
+    return (
+      <BrowserRouter>
+        <header>
+          <div className='yellowBanner'>
+            If you notice that you or somebody you know may be gambling excessively, call the National Problem Gambling Helpline today at 1800-6-668-668.
+          </div>
+          <NavBar />
+        </header>
+        <main className='contentContainer'>
+          <Routes>
+            <Route path="/" element={<Home />}/>
+            <Route path="/login" element={<Login />}/>
+            <Route path="/sports" element={<Sports />}/>
+          </Routes>
+        </main>
+        <footer>
+          <Footer />
+        </footer>
+      </BrowserRouter>
+    )
+  }
 }
 
 export default App;
