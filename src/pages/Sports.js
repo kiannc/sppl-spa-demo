@@ -5,14 +5,15 @@ import accountBanner from '../assets/accountbanner.jpg'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+
 import montenegro from '../assets/montenegro.png'
 import lithuania from '../assets/lithuania.png'
 import greece from '../assets/greece.png'
 import netherlands from '../assets/netherlands.png'
 import czech from '../assets/czech.png'
 import albania from '../assets/albania.png'
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
 
 export default function Sport() {
   const [index, setIndex] = useState(0);
