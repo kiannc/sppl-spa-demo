@@ -1,7 +1,7 @@
 function Footer() {
   return (
-    <footer class="footer">
-  	 	<div class="row">
+    <footer className="footer">
+  	 	<div className="row">
       <ul>
         <li><a href="#">Contact us</a></li>
         <li><a href="#">Our Services</a></li>

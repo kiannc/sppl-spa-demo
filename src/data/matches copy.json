@@ -1,0 +1,32 @@
+[
+  {
+    "matchId": 1,
+    "homeTeam": "Man Utd",
+    "awayTeam": "Arsenal",
+    "matchDate": "20 Sep 2023, 00:00",
+    "homeTeamScore": 0,
+    "awayTeamScore": 0,
+    "homeTeamImage": "../team/manu.png",
+    "awayTeamImage": "../team/arsenal.svg"
+  },
+  {
+    "matchId": 2,
+    "homeTeam": "Singapore",
+    "awayTeam": "England",
+    "matchDate": "23 Sep 2023, 17:00",
+    "homeTeamScore": 0,
+    "awayTeamScore": 0,
+    "homeTeamImage": "../team/singapore.png",
+    "awayTeamImage": "../team/england.png"
+  },
+  {
+    "matchId": 3,
+    "homeTeam": "Tottenham",
+    "awayTeam": "Liverpool",
+    "matchDate": "30 Sep 2023, 03:00",
+    "homeTeamScore": 0,
+    "awayTeamScore": 0,
+    "homeTeamImage": "../team/tottenham.png",
+    "awayTeamImage": "../team/liverpool.png"
+  }
+]

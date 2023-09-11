@@ -7,15 +7,10 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-
-import montenegro from '../assets/montenegro.png'
-import lithuania from '../assets/lithuania.png'
-import greece from '../assets/greece.png'
-import netherlands from '../assets/netherlands.png'
-import czech from '../assets/czech.png'
-import albania from '../assets/albania.png'
+import matches from '../data/matches.json';
 
 export default function Sport() {
+
   const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex) => {
@@ -26,32 +21,66 @@ export default function Sport() {
   const handleClose = () => {
     setError("");
     setSuccess("");
+    setBetAmmount("");
     setShow(false);
   }
-  const handleShow = () => setShow(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  let [radioValue, setRadiovalue] = useState("");
+  let [homeTeam, setHomeTeam] = useState("");
+  let [awayTeam, setAwayTeam] = useState("");
+  let [matchId, setMatchId] = useState("");
+  let [betTeam, setBetTeam] = useState("");
+  let [betAmount, setBetAmmount] = useState("");
 
-  async function handleSubmit () {
+  function handleShow (homeTeam, awayTeam, matchId) {
+    setBetAmmount("")
+    setSuccess("")
+    setError("")
+    setHomeTeam(homeTeam)
+    setAwayTeam(awayTeam)
+    setMatchId(matchId)
+    setShow(true);
+  }
 
-    await fetch(process.env.REACT_APP_API_URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": process.env.REACT_APP_API_KEY
-        },
-      })
-      .then(response => response.json())
-      .then(data =>  {
-        console.log(data)
-        setSuccess("You have successfully placed your bet!")
-        setError("");
-      })
-      .catch((err) => {
-        console.log(err)
-        setSuccess("")
-        setError("Something went wrong, Please try again.");
-       });
+  function handleRadioChange(e) {
+    setRadiovalue(e.target.value)
+    setBetTeam(e.target.value.trim());
+  }
+
+  function handleInputChange(e) {
+    let betAmount = e.target.value.trim()
+    setBetAmmount(betAmount);
+  }
+
+  async function handleSubmit (e, matchId, betTeam, betAmount) {
+
+    await fetch(process.env.REACT_APP_API_URL + '?'+ new URLSearchParams({
+      matchId: matchId,
+      betTeam: betTeam,
+      betAmount: betAmount
+    }), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": process.env.REACT_APP_API_KEY
+      },
+      mode: 'cors'
+    })
+    .then(response => response.json())
+    .then(data =>  {
+      console.log(data)
+      setSuccess("You have successfully placed your bet!")
+      setError("");
+      // setShow(false);
+    })
+    .catch((err) => {
+      console.log(err)
+      setSuccess("")
+      // setError("Something went wrong, Please try again.");
+      setError(err.toString());
+      // setShow(false);
+      });
   }
 
   return (
@@ -82,155 +111,95 @@ export default function Sport() {
           </Carousel.Item>
         </Carousel>
       </div>
+
       <div className='container mt-3 mb-3'>
         <Row>
-          <Col sm={12} md={4} className='mt-2'>
-            <div className='matchCard'>
-            <div className='matchDate'>Match Date: 20 Sep 2023, 00:00</div>
-            <Row>
-                <Col>
-                  <div className='flagContainer'>
-                    <img className='flag' src={lithuania}></img>
-                    <div className='score marginLeft'> : 0 </div>
+          {matches.map((match,index) => (
+            <Col key={index} sm={12} md={4} className='mt-2'>
+              <div className='matchCard'>
+              <div className='matchDate'>Match Date: {match.matchDate}</div>
+              <Row>
+                  <Col>
+                    <div className='flagContainer'>
+                      <Image className='flag' src={process.env.PUBLIC_URL + match.homeTeamImage} />
+                      <div className='score marginLeft'> : {match.homeTeamScore}</div>
+                    </div>
+                  </Col>
+                  <Col>
+                  <div className='versusText'>
+                    vs
                   </div>
+                  </Col>
+                  <Col>
+                    <div className='flagContainer'>
+                      <div className='score marginRight'> {match.awayTeamScore} : </div>
+                      <Image className='flag' src={process.env.PUBLIC_URL + match.awayTeamImage} />
+                    </div>
+                  </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className='countryName'>{match.homeTeam}</div>
                 </Col>
                 <Col>
-                <div className='versusText'>
-                  vs
+                <div className='matchTime'>
+                  00:00
                 </div>
                 </Col>
                 <Col>
-                  <div className='flagContainer'>
-                    <div className='score marginRight'> 0 : </div>
-                    <Image className='flag' src={montenegro} />
-                  </div>
+                  <div className='countryName'>{match.awayTeam}</div>
                 </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div className='countryName'>Lithuania</div>
-              </Col>
-              <Col>
-              <div className='matchTime'>
-                00:00
-              </div>
-              </Col>
-              <Col>
-                <div className='countryName'>Montenegro</div>
-              </Col>
-            </Row>
-            <div className='mt-2'>
-                <button className='placeBetBtn' onClick={handleShow}>PLACE BET</button>
-              </div>
-            </div>
-          </Col>
-          <Col sm={12} md={4} className='mt-2'>
-            <div className='matchCard'>
-            <div className='matchDate'>Match Date: 23 Sep 2023, 17:00</div>
-            <Row>
-                <Col>
-                  <div className='flagContainer'>
-                    <img className='flag' src={netherlands}></img>
-                    <div className='score marginLeft'> : 0 </div>
-                  </div>
-                </Col>
-                <Col>
-                <div className='versusText'>
-                  vs
+              </Row>
+              <div className='mt-2'>
+                  <button className='placeBetBtn' onClick={ () => handleShow(match.homeTeam, match.awayTeam, match.matchId)}>PLACE BET</button>
                 </div>
-                </Col>
-                <Col>
-                  <div className='flagContainer'>
-                    <div className='score marginRight'> 0 : </div>
-                    <Image className='flag' src={greece} />
-                  </div>
-                </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div className='countryName'>Netherlands</div>
-              </Col>
-              <Col>
-              <div className='matchTime'>
-                00:00
               </div>
-              </Col>
-              <Col>
-                <div className='countryName'>Greece</div>
-              </Col>
-            </Row>
-            <div className='mt-2'>
-                <button className='placeBetBtn' onClick={handleShow}>PLACE BET</button>
-              </div>
-            </div>
-          </Col>
-          <Col sm={12} md={4} className='mt-2'>
-            <div className='matchCard'>
-            <div className='matchDate'>Match Date: 30 Sep 2023, 03:00</div>
-            <Row>
-                <Col>
-                  <div className='flagContainer'>
-                    <img className='flag' src={czech}></img>
-                    <div className='score marginLeft'> : 0 </div>
-                  </div>
-                </Col>
-                <Col>
-                <div className='versusText'>
-                  vs
-                </div>
-                </Col>
-                <Col>
-                  <div className='flagContainer'>
-                    <div className='score marginRight'> 0 : </div>
-                    <Image className='flag' src={albania} />
-                  </div>
-                </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div className='countryName'>Czechia</div>
-              </Col>
-              <Col>
-              <div className='matchTime'>
-                00:00
-              </div>
-              </Col>
-              <Col>
-                <div className='countryName'>Albania</div>
-              </Col>
-            </Row>
-            <div className='mt-2'>
-                <button className='placeBetBtn' onClick={handleShow}>PLACE BET</button>
-              </div>
-            </div>
-          </Col>
+            </Col>
+          ))}
         </Row>
       </div>
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Place Bet</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <input type='text' className="placeBetInput" placeholder='Enter your bet amount'></input>
-          </Row>
-          <Row>
-              <div className='errorMessage'>
-                {error}
+        {/* <form onSubmit={(e) => handleSubmit(e, matchId, betTeam.replace(/ /g, '').toLowerCase(), betAmount.trim())}>8 */}
+          <Modal.Header closeButton>
+            <Modal.Title>Place Bet for {homeTeam} vs {awayTeam}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row>
+              <div>
+                <input type="radio" id={homeTeam} value={homeTeam} checked={radioValue === homeTeam} onChange={handleRadioChange}/>
+                <label htmlFor={homeTeam}>Home: {homeTeam}</label>
               </div>
-              <div className='successMessage'>
-                {success}
+              <div>
+                <input type="radio" id={awayTeam} value={awayTeam} checked={radioValue === awayTeam} onChange={handleRadioChange}/>
+                <label htmlFor={awayTeam}>Away: {awayTeam}</label>
               </div>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Place Bet
-          </Button>
-        </Modal.Footer>
+              <div>
+                <input type="radio" id="draw" value="draw" checked={radioValue === "draw"} onChange={handleRadioChange}/>
+                <label htmlFor="draw">Draw</label>
+              </div>
+            </Row>
+            <Row>
+              <input type='number' className="placeBetInput" value={betAmount} onChange={handleInputChange} placeholder='Enter your bet amount'></input>
+            </Row>
+            <Row>
+                <div className='errorMessage'>
+                  {error}
+                </div>
+                <div className='successMessage'>
+                  {success}
+                </div>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button type="submit" variant="primary" disabled={!betAmount || !radioValue } onClick={ (event) => handleSubmit(event, matchId, betTeam.replace(/ /g, '').toLowerCase(), betAmount.trim())}>
+            {/* <Button type="submit" variant="primary" disabled={!betAmount || !radioValue }> */}
+              Place Bet
+            </Button>
+          </Modal.Footer>
+        {/* </form> */}
       </Modal>
     </div>
   )
