@@ -93,10 +93,13 @@ footer {
 .textOnImage {
  position: absolute;
  right: 0%;
- left: 60%;
+ /* left: 60%; */
  top: 10%;
  background-color: #0d0d0d;
  opacity: 0.8;
+ padding-right: 2rem;
+ padding-left: .5rem;
+ text-align: right;
 }
 
 .textOnImage h3 {
